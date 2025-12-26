@@ -77,11 +77,12 @@ public partial class MainViewModel : ObservableObject, IDisposable
         };
         _refreshTimer.Tick += async (s, e) => await RefreshAsync();
 
-        // Initialize
-        Initialize();
+        // Initialize asynchronously but fire and forget from constructor
+        // This is acceptable for UI initialization
+        _ = InitializeAsync();
     }
 
-    private async void Initialize()
+    private async Task InitializeAsync()
     {
         // Generate default icons if they don't exist
         EnsureIconsExist();

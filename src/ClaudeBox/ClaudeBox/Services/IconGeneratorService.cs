@@ -45,8 +45,15 @@ public class IconGeneratorService
             DrawCircularProgressIcon(graphics, weeklyPercentUsed);
         }
 
-        return Icon.FromHandle(bitmap.GetHicon());
+        // Clone the icon before returning to avoid issues with bitmap disposal
+        var tempIcon = Icon.FromHandle(bitmap.GetHicon());
+        var clonedIcon = (Icon)tempIcon.Clone();
+        DestroyIcon(tempIcon.Handle);
+        return clonedIcon;
     }
+
+    [System.Runtime.InteropServices.DllImport("user32.dll", CharSet = System.Runtime.InteropServices.CharSet.Auto)]
+    private static extern bool DestroyIcon(IntPtr handle);
 
     private void DrawCircularProgressIcon(Graphics graphics, double percentUsed)
     {

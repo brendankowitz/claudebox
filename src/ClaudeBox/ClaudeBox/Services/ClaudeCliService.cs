@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -248,32 +249,32 @@ public partial class ClaudeCliService
         // "7-day usage: 35.0% (resets at 2025-11-06T03:59:59)"
         
         var fiveHourMatch = FiveHourUsageRegex().Match(output);
-        if (fiveHourMatch.Success)
+        if (fiveHourMatch.Success && double.TryParse(fiveHourMatch.Groups[1].Value, NumberStyles.Float, CultureInfo.InvariantCulture, out var fiveHourUtil))
         {
             usage.FiveHour = new UsageWindow
             {
-                Utilization = double.Parse(fiveHourMatch.Groups[1].Value),
+                Utilization = fiveHourUtil,
                 ResetString = fiveHourMatch.Groups.Count > 2 ? fiveHourMatch.Groups[2].Value : null
             };
 
             if (!string.IsNullOrEmpty(usage.FiveHour.ResetString) && 
-                DateTime.TryParse(usage.FiveHour.ResetString, out var resetTime))
+                DateTime.TryParse(usage.FiveHour.ResetString, CultureInfo.InvariantCulture, DateTimeStyles.None, out var resetTime))
             {
                 usage.FiveHour.ResetsAt = resetTime.ToUniversalTime();
             }
         }
 
         var sevenDayMatch = SevenDayUsageRegex().Match(output);
-        if (sevenDayMatch.Success)
+        if (sevenDayMatch.Success && double.TryParse(sevenDayMatch.Groups[1].Value, NumberStyles.Float, CultureInfo.InvariantCulture, out var sevenDayUtil))
         {
             usage.SevenDay = new UsageWindow
             {
-                Utilization = double.Parse(sevenDayMatch.Groups[1].Value),
+                Utilization = sevenDayUtil,
                 ResetString = sevenDayMatch.Groups.Count > 2 ? sevenDayMatch.Groups[2].Value : null
             };
 
             if (!string.IsNullOrEmpty(usage.SevenDay.ResetString) && 
-                DateTime.TryParse(usage.SevenDay.ResetString, out var resetTime))
+                DateTime.TryParse(usage.SevenDay.ResetString, CultureInfo.InvariantCulture, DateTimeStyles.None, out var resetTime))
             {
                 usage.SevenDay.ResetsAt = resetTime.ToUniversalTime();
             }
@@ -283,13 +284,13 @@ public partial class ClaudeCliService
         if (usage.FiveHour == null && usage.SevenDay == null)
         {
             var percentMatches = PercentageRegex().Matches(output);
-            if (percentMatches.Count >= 1)
+            if (percentMatches.Count >= 1 && double.TryParse(percentMatches[0].Groups[1].Value, NumberStyles.Float, CultureInfo.InvariantCulture, out var firstPercent))
             {
-                usage.FiveHour = new UsageWindow { Utilization = double.Parse(percentMatches[0].Groups[1].Value) };
+                usage.FiveHour = new UsageWindow { Utilization = firstPercent };
             }
-            if (percentMatches.Count >= 2)
+            if (percentMatches.Count >= 2 && double.TryParse(percentMatches[1].Groups[1].Value, NumberStyles.Float, CultureInfo.InvariantCulture, out var secondPercent))
             {
-                usage.SevenDay = new UsageWindow { Utilization = double.Parse(percentMatches[1].Groups[1].Value) };
+                usage.SevenDay = new UsageWindow { Utilization = secondPercent };
             }
         }
     }
