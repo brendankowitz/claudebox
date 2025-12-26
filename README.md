@@ -101,13 +101,20 @@ All data stays local - no network calls are made beyond what the Claude CLI does
 
 ```bash
 # Restore dependencies
-dotnet restore src/ClaudeBox/ClaudeBox/ClaudeBox.csproj
+dotnet restore ClaudeBox.sln
 
 # Build
-dotnet build src/ClaudeBox/ClaudeBox/ClaudeBox.csproj
+dotnet build ClaudeBox.sln
 
-# Run
+# Run (Windows only)
 dotnet run --project src/ClaudeBox/ClaudeBox/ClaudeBox.csproj
+```
+
+### Testing
+
+```bash
+# Run tests (Windows only - requires Windows Desktop runtime)
+dotnet test tests/ClaudeBox.Tests/ClaudeBox.Tests/ClaudeBox.Tests.csproj
 ```
 
 ### Project Structure
@@ -128,6 +135,9 @@ src/ClaudeBox/ClaudeBox/
 │   └── SettingsWindow.xaml(.cs)   # Settings dialog
 └── Converters/
     └── Converters.cs       # WPF value converters
+
+tests/ClaudeBox.Tests/ClaudeBox.Tests/
+└── ClaudeUsageTests.cs     # Unit tests for models
 ```
 
 ### Technologies
