@@ -1,0 +1,21 @@
+<Window x:Class="ClaudeBox.Views.QuotaPopupWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:views="clr-namespace:ClaudeBox.Views"
+        Title="ClaudeBox"
+        Width="336"
+        SizeToContent="Height"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        Topmost="True"
+        Deactivated="Window_Deactivated">
+    <Border Background="#1E1E1E" 
+            CornerRadius="8"
+            BorderBrush="#444444"
+            BorderThickness="1">
+        <views:QuotaPopup x:Name="PopupContent"/>
+    </Border>
+</Window>
